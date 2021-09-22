@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+	<!-- ファイル -->
+    <property name="APP_FILE"   	value="./logs/testproject1_apl.${catalina.instance.name}.log"/>
+    <property name="API_ERROR_FILE"	value="./logs/api_error_testproject1.${catalina.instance.name}.log"/>
+    
+	<appender name="testproject1_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%-5p %d [%t][%X{session}][%X{ip}] %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="testproject1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%-5p %d [%t][%X{session}][%X{ip}] %m%n</pattern>
+		</encoder>
+		<file>${APP_FILE}</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${APP_FILE}.%d{yyyyMMdd}</fileNamePattern>
+			<maxHistory>31</maxHistory>
+		</rollingPolicy>
+	</appender>
+
+	<!-- API連携エラー用ログファイル出力用Appender -->
+	<appender name="API_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%-5p %d [%t][%X{session}][%X{ip}] %m%n</pattern>
+		</encoder>
+		<file>${API_ERROR_FILE}</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${API_ERROR_FILE}.%d{yyyyMMdd}</fileNamePattern>
+			<maxHistory>5</maxHistory>
+		</rollingPolicy>
+	</appender>
+	
+    <!-- **********************root設定************************ -->
+    <!-- 全体のデフォルト出力設定 -->
+    <root level="INFO">
+	    <appender-ref ref="testproject1" />
+	    <appender-ref ref="testproject1_CONSOLE" />
+    </root>
+	<!-- アプリログファイル -->
+	<logger name="testproject1" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="testproject1" />
+		<appender-ref ref="testproject1_CONSOLE" />
+	</logger>
+	<!-- API連携エラー用ログファイル -->
+	<logger name="API_ERROR" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="API_ERROR" />
+		<appender-ref ref="testproject1_CONSOLE" />
+	</logger>
+
+</configuration>

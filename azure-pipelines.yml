@@ -25,3 +25,9 @@ steps:
   inputs:
     targetPath: '$(System.DefaultWorkingDirectory)'
     artifact: '_mshyatsu.devopstest'
+
+- task: DownloadBuildArtifacts@1
+  displayName: 'Download Build Artifacts'
+  inputs:
+    artifactName: '_mshyatsu.devopstest'
+    downloadPath: '$(System.DefaultWorkingDirectory)'
